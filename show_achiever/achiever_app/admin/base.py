@@ -41,7 +41,8 @@ class BaseAdmin(admin.ModelAdmin):
 
     list_per_page = 25
     djangoql_completion_enabled_by_default = True
-    KEEP_LIST_DISPLAY = 1
+    LIST_DISPLAY_START = 1
+    LIST_DISPLAY_END = -2
 
 
 class NoViewAdminMixin:

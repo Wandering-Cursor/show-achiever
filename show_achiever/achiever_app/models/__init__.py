@@ -1,5 +1,7 @@
-from .demo import DemoModel
+from . import attendee, common, organization
 
 __all__ = [
-    "DemoModel",
+    "attendee",
+    "common",
+    "organization",
 ]

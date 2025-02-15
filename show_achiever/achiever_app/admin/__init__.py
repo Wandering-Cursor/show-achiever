@@ -1,6 +1,8 @@
-from . import base, demo
+from . import attendee, base, common, organization
 
 __all__ = [
+    "attendee",
     "base",
-    "demo",
+    "common",
+    "organization",
 ]
