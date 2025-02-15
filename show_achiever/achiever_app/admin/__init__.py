@@ -1,6 +1,6 @@
-from . import base, demo
+from . import base, user
 
 __all__ = [
     "base",
-    "demo",
+    "user",
 ]

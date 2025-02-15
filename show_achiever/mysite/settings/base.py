@@ -12,14 +12,14 @@ TOP_DIR = BASE_DIR.parent
 SECRET_KEY = settings.django_secret_key
 
 INSTALLED_APPS = [
+    "mysite",
+    "achiever_app",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "mysite",
-    "achiever_app",
 ]
 
 

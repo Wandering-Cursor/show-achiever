@@ -1,10 +1,14 @@
 from typing import TYPE_CHECKING
 
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
+try:
+    from mysite.asgi import django_app
+except ImportError:
+    from show_achiever.mysite.asgi import django_app
+
 from achiever_app.endpoints.internal.router import achiever_app_internal_router
 from achiever_app.endpoints.router import achiever_app_router
-from mysite.asgi import django_app
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from mysite.config import settings
 from mysite.errors.handlers import error_handler_pairs
 from mysite.middleware import add_middlewares

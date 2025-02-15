@@ -1,7 +1,6 @@
-from . import demo, internal, redirect, router
+from . import internal, redirect, router
 
 __all__ = [
-    "demo",
     "internal",
     "redirect",
     "router",
