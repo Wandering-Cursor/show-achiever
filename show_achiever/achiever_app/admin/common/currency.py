@@ -27,4 +27,4 @@ class CurrencyAdmin(BaseAdmin):
         *BaseAdmin.list_display[BaseAdmin.LIST_DISPLAY_END :],
     )
 
-    LIST_DISPLAY_START = BaseAdmin.LIST_DISPLAY_START + 3
+    LIST_DISPLAY_START = BaseAdmin.LIST_DISPLAY_START + 2

@@ -1,4 +1,4 @@
-from achiever_app.models.base import BaseModel
+from achiever_app.models.base import BaseMeta, BaseModel
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -24,7 +24,7 @@ class Currency(BaseModel):
     def __str__(self) -> str:
         return f"{_('Currency')}: {self.code}"
 
-    class Meta:
+    class Meta(BaseMeta):
         verbose_name = _("Currency")
         verbose_name_plural = _("Currencies")
         constraints = (

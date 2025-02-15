@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from achiever_app.models.base import BaseModel
+from achiever_app.models.base import BaseMeta, BaseModel
 from achiever_app.models.organization.partner import Partner
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -47,7 +47,7 @@ class PartnerTask(BaseModel):
     def __str__(self) -> str:
         return f"{_('Partner Task')} - {self.name}"
 
-    class Meta:
+    class Meta(BaseMeta):
         verbose_name = _("Partner Task")
         verbose_name_plural = _("Partner Tasks")
 
@@ -70,6 +70,6 @@ class PartnerTaskItem(BaseModel):
     def __str__(self) -> str:
         return f"{_('Partner Task Item')} - {self.task.name} ({self.pk})"
 
-    class Meta:
+    class Meta(BaseMeta):
         verbose_name = _("Partner Task Item")
         verbose_name_plural = _("Partner Task Items")

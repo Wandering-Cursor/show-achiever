@@ -1,6 +1,8 @@
+from decimal import Decimal
 from typing import TYPE_CHECKING
 
-from achiever_app.models.base import BaseModel
+from achiever_app.models.attendee.balance import AttendeeWalletBalance
+from achiever_app.models.base import BaseMeta, BaseModel
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -22,10 +24,23 @@ class AttendeeWallet(BaseModel):
         on_delete=models.CASCADE,
     )
 
+    @property
+    def current_balance(self) -> Decimal:
+        try:
+            return (
+                AttendeeWalletBalance.objects.filter(
+                    wallet=self,
+                )
+                .latest()
+                .amount
+            )
+        except AttendeeWalletBalance.DoesNotExist:
+            return Decimal("0")
+
     def __str__(self) -> str:
         return f"{self.attendee} - {self.currency}"
 
-    class Meta:
+    class Meta(BaseMeta):
         verbose_name = _("Attendee Wallet")
         verbose_name_plural = _("Attendee Wallets")
         constraints = (

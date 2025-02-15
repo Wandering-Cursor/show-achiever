@@ -1,9 +1,8 @@
-from . import attendee, base, common, organization, user
+from . import attendee, base, common, organization
 
 __all__ = [
     "attendee",
     "base",
     "common",
     "organization",
-    "user",
 ]

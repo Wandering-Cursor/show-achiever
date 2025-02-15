@@ -1,8 +1,7 @@
-from . import event, goal, partner, task
+from . import event, goal, partner
 
 __all__ = [
     "event",
     "goal",
     "partner",
-    "task",
 ]

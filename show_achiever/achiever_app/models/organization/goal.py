@@ -1,6 +1,7 @@
+from decimal import Decimal
 from typing import TYPE_CHECKING
 
-from achiever_app.models.base import BaseModel
+from achiever_app.models.base import BaseMeta, BaseModel
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -44,10 +45,18 @@ class Goal(BaseModel):
         decimal_places=4,
     )
 
+    @property
+    def current_balance(self) -> Decimal:
+        try:
+            latest_balance = GoalBalance.objects.filter(goal=self).latest()
+            return latest_balance.amount
+        except GoalBalance.DoesNotExist:
+            return Decimal(0)
+
     def __str__(self) -> str:
         return f"{_('Goal')} - {self.name}"
 
-    class Meta:
+    class Meta(BaseMeta):
         verbose_name = _("Goal")
         verbose_name_plural = _("Goals")
 
@@ -73,7 +82,7 @@ class GoalTransaction(BaseModel):
     def __str__(self) -> str:
         return f"{self.goal} - {self.amount}"
 
-    class Meta:
+    class Meta(BaseMeta):
         verbose_name = _("Goal Transaction")
         verbose_name_plural = _("Goal Transactions")
 
@@ -99,6 +108,6 @@ class GoalBalance(BaseModel):
     def __str__(self) -> str:
         return f"{self.goal} - {self.amount}"
 
-    class Meta:
+    class Meta(BaseMeta):
         verbose_name = _("Goal Balance")
         verbose_name_plural = _("Goal Balances")

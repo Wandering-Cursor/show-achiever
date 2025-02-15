@@ -1,6 +1,11 @@
-from achiever_app.models.base import BaseModel
+from typing import TYPE_CHECKING
+
+from achiever_app.models.base import BaseMeta, BaseModel
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+if TYPE_CHECKING:
+    from achiever_app.models.organization import Event
 
 
 def get_randomized_name(user_hash: int) -> str:
@@ -39,6 +44,7 @@ class Attendee(BaseModel):
     telegram_id = models.CharField(
         verbose_name=_("Telegram ID"),
         max_length=128,
+        unique=True,
     )
 
     first_name = models.CharField(
@@ -67,6 +73,13 @@ class Attendee(BaseModel):
         default=False,
     )
 
+    following_event: "Event" = models.ForeignKey(
+        "achiever_app.Event",
+        verbose_name=_("Following Event"),
+        on_delete=models.CASCADE,
+        related_name="attendees",
+    )
+
     def __str__(self) -> str:
         return f"{_('Attendee')} - {self.first_name} {self.last_name}"
 
@@ -78,6 +91,6 @@ class Attendee(BaseModel):
             hash(self.uuid),
         )
 
-    class Meta:
+    class Meta(BaseMeta):
         verbose_name = _("Attendee")
         verbose_name_plural = _("Attendees")
