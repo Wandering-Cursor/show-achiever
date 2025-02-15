@@ -1,0 +1,21 @@
+{
+	"name": "Show Achiever Backend",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "backend",
+	"workspaceFolder": "/workspace",
+	"shutdownAction": "stopCompose",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode-remote.remote-containers",
+				"GitHub.vscode-pull-request-github",
+				"ms-python.python",
+				"ms-python.debugpy",
+				"charliermarsh.ruff",
+				"waderyan.gitblame",
+				"phil294.git-log--graph",
+				"esbenp.prettier-vscode"
+			]
+		}
+	}
+}

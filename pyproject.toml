@@ -1,0 +1,73 @@
+[project]
+name = "show-achiever"
+version = "0.1.0"
+description = "Show Achiever Backend app"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "celery>=5.4.0",
+    "dj-database-url==2.3.0",
+    "django==5.1.6",
+    "django-redis>=5.4.0",
+    "fastapi[standard]==0.115.8",
+    "psycopg>=3.2.4",
+    "pydantic-settings>=2.7.1",
+    "pytz>=2025.1",
+    "toml>=0.10.2",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "ipython>=8.32.0",
+    "ruff>=0.9.5",
+]
+
+[tool.ruff]
+line-length = 100
+exclude = [
+  "*/migrations/*",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.ruff.lint]
+extend-select = [
+  "UP",
+  "E",
+  "W",
+  "I",
+  "C90",
+  "N",
+  "ANN",
+  "ASYNC",
+  "BLE",
+  "FBT",
+  "B",
+  "A",
+  "C4",
+  "DTZ",
+  "T10",
+  "FA",
+  "ISC",
+  "ICN",
+  "INP",
+  "PIE",
+  "T20",
+  "PYI",
+  "Q",
+  "RET",
+  "SLF",
+  "SIM",
+  "TID",
+  "TCH",
+  "ARG",
+  "TD",
+  "FIX",
+  "ERA",
+  "PL",
+  "RUF",
+]
+ignore = [
+  "ISC001"
+]
