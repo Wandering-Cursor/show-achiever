@@ -1,4 +1,6 @@
 from achiever_app.admin.base import BaseAdmin
+from achiever_app.admin.organization.goal import GoalInline
+from achiever_app.admin.organization.partner import PartnerInline
 from achiever_app.models.organization import Event
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
@@ -28,3 +30,9 @@ class EventAdmin(BaseAdmin):
     )
 
     LIST_DISPLAY_START = BaseAdmin.LIST_DISPLAY_START + 2
+
+    inlines = (
+        *BaseAdmin.inlines,
+        GoalInline,
+        PartnerInline,
+    )

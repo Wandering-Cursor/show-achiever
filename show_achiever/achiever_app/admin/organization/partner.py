@@ -33,6 +33,12 @@ def create_100_partner_task_items(modeladmin, request, queryset) -> None:  # noq
     create_partner_task_items(queryset, 100)
 
 
+class PartnerInline(admin.TabularInline):
+    model = Partner
+    extra = 0
+    show_change_link = True
+
+
 class PartnerTaskInline(admin.TabularInline):
     model = PartnerTask
     extra = 0

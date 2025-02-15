@@ -4,6 +4,12 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 
+class GoalInline(admin.TabularInline):
+    model = Goal
+    extra = 0
+    show_change_link = True
+
+
 @admin.register(Goal)
 class GoalAdmin(BaseAdmin):
     fieldsets = (
