@@ -14,6 +14,7 @@ SECRET_KEY = settings.django_secret_key
 INSTALLED_APPS = [
     "mysite",
     "achiever_app",
+    "telegram_bot_app",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
