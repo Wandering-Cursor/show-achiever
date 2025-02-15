@@ -3,8 +3,8 @@ name: "show-achiever"
 services:
   backend:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ./..
+      dockerfile: .devcontainer/Dockerfile
     command: /bin/sh -c "while sleep 1000; do :; done"
     volumes:
       - backend-data:/workspace
