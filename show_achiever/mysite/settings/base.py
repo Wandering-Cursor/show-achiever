@@ -15,6 +15,7 @@ INSTALLED_APPS = [
     "mysite",
     "achiever_app",
     "telegram_bot_app",
+    "python_telegram_bot_django_persistence",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

@@ -14,6 +14,7 @@ dependencies = [
     "psycopg>=3.2.4",
     "pydantic-settings>=2.7.1",
     "python-telegram-bot>=21.10",
+    "python-telegram-bot-django-persistence[ptb]>=0.2.1",
     "pytz>=2025.1",
     "toml>=0.10.2",
 ]

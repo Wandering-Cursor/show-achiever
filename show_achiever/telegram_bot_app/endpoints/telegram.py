@@ -20,7 +20,7 @@ async def telegram_webhook(
     """
     Telegram Webhook endpoint
     """
-    bot = find_bot(
+    bot = await find_bot(
         platform=platform,
         secret=secret_token,
         token=bot_token,
