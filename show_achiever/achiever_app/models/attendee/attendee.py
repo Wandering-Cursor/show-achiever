@@ -5,6 +5,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 if TYPE_CHECKING:
+    import asyncio
+
     from achiever_app.models.organization import Event
 
 
@@ -73,7 +75,7 @@ class Attendee(BaseModel):
         default=False,
     )
 
-    following_event: "Event" = models.ForeignKey(
+    following_event: "asyncio.Future[Event] | Event" = models.ForeignKey(
         "achiever_app.Event",
         verbose_name=_("Following Event"),
         on_delete=models.CASCADE,
@@ -85,11 +87,13 @@ class Attendee(BaseModel):
 
     @property
     def visible_name(self) -> str:
-        if self.show_publicly:
-            return f"{self.first_name} {self.last_name}"
-        return get_randomized_name(
-            hash(self.uuid),
-        )
+        name = f"{self.first_name} {self.last_name}"
+        if not self.show_publicly:
+            name = get_randomized_name(
+                hash(self.uuid),
+            )
+
+        return name.strip()
 
     class Meta(BaseMeta):
         verbose_name = _("Attendee")
