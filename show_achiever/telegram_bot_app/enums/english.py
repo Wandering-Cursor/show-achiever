@@ -32,8 +32,18 @@ class TelegramMessages(StrEnum):
 
     # Menu Buttons
 
-    MENU__BALANCES = "View Balances"
-    MENU__SETTINGS = "Settings"
+    MENU__BALANCES = "Balances 💰"
+    MENU__SETTINGS = "Settings ⚙️"
+    MENU__TO_START = "To Start Menu 🏠"
+
+    # Settings
+
+    SETTINGS = "Account Settings:"
+
+    SETTINGS__CHANGE_EVENT = "Change Event"
+    SETTINGS__TOGGLE_PUBLICITY__ON = "Show My Name"
+    SETTINGS__TOGGLE_PUBLICITY__OFF = "Hide My Name"
+    SETTINGS__REMOVE_ACCOUNT = "Remove Account"
 
     # Callback Query
 

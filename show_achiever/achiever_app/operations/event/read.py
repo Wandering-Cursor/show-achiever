@@ -37,6 +37,6 @@ async def get_event_by_semi_unique_name(
         ) from e
 
 
-async def get_recent_events() -> list[Event]:
-    iterator = Event.objects.aiterator(chunk_size=5)
+async def get_recent_events(limit: int = 5) -> list[Event]:
+    iterator = Event.objects.all()[:limit]
     return [event async for event in iterator]

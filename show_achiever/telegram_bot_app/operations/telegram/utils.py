@@ -1,5 +1,4 @@
-from collections.abc import Awaitable, Callable
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypeVar
 
 from achiever_app.operations.attendee.attendee.read import find_attendee
 from asgiref.sync import sync_to_async
@@ -9,20 +8,22 @@ from telegram_bot_app.enums.translation import get_class
 if TYPE_CHECKING:
     from achiever_app.models.attendee.attendee import Attendee
     from telegram import Update
-    from telegram.ext import ContextTypes
     from telegram_bot_app.enums.english import TelegramMessages
 
 
-def handler_decorator() -> Callable[
-    [Callable[["Update", "ContextTypes.DEFAULT_TYPE"], Awaitable[None]]],
-    Callable[["Update", "ContextTypes.DEFAULT_TYPE"], Awaitable[None]],
-]:
+FunctionType = TypeVar("FunctionType")
+
+
+def handler_decorator() -> FunctionType:
     def decorator(
-        func: Callable[["Update", "ContextTypes.DEFAULT_TYPE"], Awaitable[None]],
-    ) -> Callable[["Update", "ContextTypes.DEFAULT_TYPE"], Awaitable[None]]:
-        async def wrapper(update: "Update", context: "ContextTypes.DEFAULT_TYPE") -> None:
+        func: FunctionType,
+    ) -> FunctionType:
+        async def wrapper(
+            *args,  # noqa: ANN002
+            **kwargs,  # noqa: ANN003
+        ) -> None:
             await sync_to_async(close_old_connections)()
-            return await func(update, context)
+            return await func(*args, **kwargs)
 
         return wrapper
 

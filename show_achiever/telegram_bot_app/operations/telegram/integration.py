@@ -11,6 +11,7 @@ from telegram.ext import (
     MessageHandler,
     filters,
 )
+from telegram_bot_app.enums.commands import Commands
 from telegram_bot_app.enums.states import ApplicationStates
 from telegram_bot_app.operations.telegram import handlers
 
@@ -82,9 +83,34 @@ async def make_bot(bot: "Bot") -> Application:
 
     application.add_handler(
         CallbackQueryHandler(
+            handlers.to_start,
+            pattern=Commands.TO_START.as_regex,
+        )
+    )
+    application.add_handler(
+        CallbackQueryHandler(
             handlers.show_balances,
-            pattern="^show_balances$",
+            pattern=Commands.BALANCES.as_regex,
         ),
+    )
+    application.add_handler(
+        CallbackQueryHandler(
+            handlers.show_settings,
+            pattern=Commands.SETTINGS.as_regex,
+        ),
+    )
+
+    application.add_handler(
+        CallbackQueryHandler(
+            handlers.update_event,
+            pattern=Commands.CHANGE_EVENT.as_regex,
+        )
+    )
+    application.add_handler(
+        CallbackQueryHandler(
+            handlers.set_event,
+            pattern=Commands.CHANGE_EVENT_CONFIRMATION.as_regex,
+        )
     )
 
     await application.initialize()

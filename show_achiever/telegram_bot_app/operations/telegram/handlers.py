@@ -2,7 +2,11 @@ from typing import TYPE_CHECKING
 
 from achiever_app.operations.attendee.attendee.create import register_attendee
 from achiever_app.operations.attendee.wallet.read import get_wallets
-from achiever_app.operations.event.read import get_event_by_id, get_event_by_semi_unique_name
+from achiever_app.operations.event.read import (
+    get_event_by_id,
+    get_event_by_semi_unique_name,
+    get_recent_events,
+)
 from achiever_app.schemas.attendee import AttendeeInfo
 from mysite.errors.http_errors import NotFoundError
 from telegram import KeyboardButton, ReplyKeyboardMarkup, Update
@@ -22,6 +26,8 @@ if TYPE_CHECKING:
 async def start_command(
     update: "Update",
     context: "ContextTypes.DEFAULT_TYPE",
+    *,
+    as_new_message: bool = True,
 ) -> None:
     try:
         attendee = await find_attendee_for_update(update)
@@ -34,6 +40,7 @@ async def start_command(
         attendee=attendee,
         update=update,
         _context=context,
+        as_new_message=as_new_message,
     )
 
 
@@ -58,6 +65,59 @@ async def choose_event(
     )
 
     return ApplicationStates.REGISTER_FIRST_NAME
+
+
+@handler_decorator()
+async def update_event(
+    update: "Update",
+    context: "ContextTypes.DEFAULT_TYPE",
+) -> None:
+    events = await get_recent_events(limit=10)
+
+    return await messages.choose_event(
+        events=events,
+        update=update,
+        _context=context,
+    )
+
+
+@handler_decorator()
+async def set_event(
+    update: "Update",
+    context: "ContextTypes.DEFAULT_TYPE",
+) -> None:
+    if not update.callback_query:
+        return None
+
+    query_payload = update.callback_query.data
+    if not query_payload:
+        return await messages.answer_query(
+            update=update,
+            alert=True,
+            message="No query payload",
+        )
+
+    await messages.answer_query(update=update)
+
+    event_id = query_payload.split(" ")[1]
+
+    event = await get_event_by_id(
+        event_id=event_id,
+    )
+
+    attendee = await find_attendee_for_update(update)
+
+    attendee.following_event = event
+    await attendee.asave()
+
+    attendee = await find_attendee_for_update(update)
+
+    return await messages.main_menu(
+        attendee=attendee,
+        update=update,
+        _context=context,
+        as_new_message=False,
+    )
 
 
 @handler_decorator()
@@ -225,4 +285,40 @@ async def show_balances(
         wallets=wallets,
         update=update,
         _context=context,
+    )
+
+
+@handler_decorator()
+async def show_settings(
+    update: "Update",
+    context: "ContextTypes.DEFAULT_TYPE",
+) -> None:
+    await messages.answer_query(update=update)
+
+    try:
+        attendee = await find_attendee_for_update(update)
+    except NotFoundError:
+        await messages.not_registered(
+            update=update,
+        )
+        return await start_command(update)
+
+    return await messages.show_settings(
+        attendee=attendee,
+        update=update,
+        _context=context,
+    )
+
+
+@handler_decorator()
+async def to_start(
+    update: "Update",
+    _context: "ContextTypes.DEFAULT_TYPE",
+) -> None:
+    await messages.answer_query(update=update)
+
+    return await start_command(
+        update=update,
+        context=_context,
+        as_new_message=False,
     )

@@ -17,6 +17,7 @@ from telegram_bot_app.operations.telegram.utils import get_translation
 if TYPE_CHECKING:
     from achiever_app.models.attendee.attendee import Attendee
     from achiever_app.models.attendee.wallet import AttendeeWallet
+    from achiever_app.models.organization import Event
     from telegram.ext import ContextTypes
 
 
@@ -24,6 +25,8 @@ async def main_menu(
     attendee: "Attendee",
     update: "Update",
     _context: "ContextTypes.DEFAULT_TYPE",
+    *,
+    as_new_message: bool = True,
 ) -> int:
     translation = get_translation(update)
 
@@ -31,27 +34,39 @@ async def main_menu(
         [
             InlineKeyboardButton(
                 text=translation.MENU__BALANCES,
-                callback_data=Commands.BALANCES.as_handler,
+                callback_data=Commands.BALANCES.as_command,
             ),
         ],
         [
             InlineKeyboardButton(
                 text=translation.MENU__SETTINGS,
-                callback_data=Commands.SETTINGS.as_handler,
+                callback_data=Commands.SETTINGS.as_command,
             ),
         ],
     ]
 
-    await update.message.reply_text(
-        translation.START.format(
-            attendee=attendee,
-            event=await attendee.following_event,
-            update=update,
-        ),
-        reply_markup=InlineKeyboardMarkup(
-            inline_menu,
-        ),
-    )
+    if as_new_message:
+        await update.message.reply_text(
+            translation.START.format(
+                attendee=attendee,
+                event=await attendee.following_event,
+                update=update,
+            ),
+            reply_markup=InlineKeyboardMarkup(
+                inline_menu,
+            ),
+        )
+    else:
+        await update.effective_message.edit_text(
+            translation.START.format(
+                attendee=attendee,
+                event=await attendee.following_event,
+                update=update,
+            ),
+            reply_markup=InlineKeyboardMarkup(
+                inline_menu,
+            ),
+        )
 
     return -1
 
@@ -115,11 +130,20 @@ async def clear_keyboards(
 
 async def answer_query(
     update: "Update",
+    *,
+    alert: bool = False,
+    message: str | None = None,
 ) -> None:
+    if not update.callback_query:
+        return
+
     translation = get_translation(update)
 
+    message = message or translation.ANSWER
+
     await update.callback_query.answer(
-        translation.ANSWER,
+        text=message,
+        show_alert=alert,
     )
 
 
@@ -140,14 +164,109 @@ async def show_balances(
                         wallet_currency=(await wallet.currency).code,
                         wallet_balance=await wallet.current_balance_async,
                     ),
-                    callback_data=f"{Commands.VIEW_WALLET.as_handler.format(wallet=wallet)}",
+                    callback_data=f"{Commands.VIEW_WALLET.as_command.format(wallet=wallet)}",
                 ),
             ],
         )
 
-    await update.effective_chat.send_message(
+    inline_menu.append(
+        [
+            InlineKeyboardButton(
+                text=translation.MENU__TO_START,
+                callback_data=Commands.TO_START.as_command,
+            ),
+        ]
+    )
+
+    await update.effective_message.edit_text(
         translation.BALANCES,
         reply_markup=InlineKeyboardMarkup(
             inline_menu,
+        ),
+    )
+
+
+async def show_settings(
+    attendee: "Attendee",
+    update: "Update",
+    _context: "ContextTypes.DEFAULT_TYPE",
+) -> None:
+    translation = get_translation(update)
+
+    publicity_update = (
+        translation.SETTINGS__TOGGLE_PUBLICITY__OFF
+        if attendee.show_publicly
+        else translation.SETTINGS__TOGGLE_PUBLICITY__ON
+    )
+
+    inline_menu = [
+        [
+            InlineKeyboardButton(
+                text=translation.SETTINGS__CHANGE_EVENT,
+                callback_data=Commands.CHANGE_EVENT.as_command,
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                text=publicity_update,
+                callback_data=Commands.TOGGLE_PUBLICITY.as_command,
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                text=translation.SETTINGS__REMOVE_ACCOUNT,
+                callback_data=Commands.REMOVE_ACCOUNT.as_command,
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                text=translation.MENU__TO_START,
+                callback_data=Commands.TO_START.as_command,
+            ),
+        ],
+    ]
+
+    await update.effective_message.edit_text(
+        translation.SETTINGS,
+        reply_markup=InlineKeyboardMarkup(
+            inline_menu,
+        ),
+    )
+
+
+async def choose_event(
+    events: list["Event"],
+    update: "Update",
+    _context: "ContextTypes.DEFAULT_TYPE",
+) -> None:
+    translation = get_translation(update)
+
+    keyboard = []
+
+    for event in events:
+        keyboard.append(
+            [
+                InlineKeyboardButton(
+                    text=event.name,
+                    callback_data=Commands.CHANGE_EVENT_CONFIRMATION.as_command.format(
+                        event=event,
+                    ),
+                )
+            ]
+        )
+
+    keyboard.append(
+        [
+            InlineKeyboardButton(
+                text=translation.MENU__SETTINGS,
+                callback_data=Commands.SETTINGS.as_command,
+            ),
+        ]
+    )
+
+    await update.effective_message.edit_text(
+        translation.REGISTER_EVENT,
+        reply_markup=InlineKeyboardMarkup(
+            keyboard,
         ),
     )
