@@ -42,16 +42,16 @@ async def get_tasks(
     )
 
     if only_available:
-        used_partner_tasks = PartnerTask.objects.filter(
+        used_partner_tasks = qs.filter(
             uuid__in=AttendeeWalletBalance.objects.filter(
                 wallet__attendee=attendee,
             ).values("for_partner_task_item__task"),
         )
-        qs = PartnerTask.objects.exclude(
+        qs = qs.exclude(
             uuid__in=used_partner_tasks,
         )
     if only_completed:
-        qs = PartnerTask.objects.filter(
+        qs = qs.filter(
             uuid__in=AttendeeWalletBalance.objects.filter(
                 wallet__attendee=attendee,
             ).values("for_partner_task_item__task"),
