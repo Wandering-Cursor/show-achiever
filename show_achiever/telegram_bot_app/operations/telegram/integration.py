@@ -99,6 +99,25 @@ async def make_bot(bot: "Bot") -> Application:
             pattern=Commands.SETTINGS.as_regex,
         ),
     )
+    application.add_handler(
+        CallbackQueryHandler(
+            handlers.show_tasks,
+            pattern=Commands.TASKS.as_regex,
+        ),
+    )
+
+    application.add_handler(
+        CallbackQueryHandler(
+            handlers.show_tasks_pages,
+            pattern=Commands.AVAILABLE_TASKS.as_regex,
+        ),
+    )
+    application.add_handler(
+        CallbackQueryHandler(
+            handlers.show_tasks_pages,
+            pattern=Commands.COMPLETED_TASKS.as_regex,
+        ),
+    )
 
     application.add_handler(
         CallbackQueryHandler(
@@ -110,6 +129,20 @@ async def make_bot(bot: "Bot") -> Application:
         CallbackQueryHandler(
             handlers.set_event,
             pattern=Commands.CHANGE_EVENT_CONFIRMATION.as_regex,
+        )
+    )
+
+    application.add_handler(
+        CallbackQueryHandler(
+            handlers.toggle_publicity,
+            pattern=Commands.TOGGLE_PUBLICITY.as_regex,
+        )
+    )
+
+    application.add_handler(
+        CallbackQueryHandler(
+            handlers.remove_account,
+            pattern=Commands.REMOVE_ACCOUNT.as_regex,
         )
     )
 

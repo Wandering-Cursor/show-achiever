@@ -33,6 +33,7 @@ class TelegramMessages(StrEnum):
     # Menu Buttons
 
     MENU__BALANCES = "Balances 💰"
+    MENU__TASKS = "Tasks 📝"
     MENU__SETTINGS = "Settings ⚙️"
     MENU__TO_START = "To Start Menu 🏠"
 
@@ -45,6 +46,18 @@ class TelegramMessages(StrEnum):
     SETTINGS__TOGGLE_PUBLICITY__OFF = "Hide My Name"
     SETTINGS__REMOVE_ACCOUNT = "Remove Account"
 
+    # Tasks
+
+    TASKS = "Tasks for event {event.name}:"
+
+    TASKS_PAGINATION = "Tasks:"
+
+    AVAILABLE_TASKS = "Available Tasks 📝"
+    COMPLETED_TASKS = "Completed Tasks ✅"
+
     # Callback Query
 
     ANSWER = "Processing your request..."
+
+    PAGINATION__PREVIOUS = "⬅️ {previous}"
+    PAGINATION__NEXT = "{next} ➡️"

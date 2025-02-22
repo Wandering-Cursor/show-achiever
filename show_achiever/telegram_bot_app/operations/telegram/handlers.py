@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from achiever_app.operations.attendee.attendee.create import register_attendee
+from achiever_app.operations.attendee.tasks.read import get_tasks
 from achiever_app.operations.attendee.wallet.read import get_wallets
 from achiever_app.operations.event.read import (
     get_event_by_id,
@@ -10,6 +11,7 @@ from achiever_app.operations.event.read import (
 from achiever_app.schemas.attendee import AttendeeInfo
 from mysite.errors.http_errors import NotFoundError
 from telegram import KeyboardButton, ReplyKeyboardMarkup, Update
+from telegram_bot_app.enums.misc import TaskType
 from telegram_bot_app.enums.states import ApplicationStates
 from telegram_bot_app.operations.telegram import messages
 from telegram_bot_app.operations.telegram.utils import (
@@ -17,6 +19,7 @@ from telegram_bot_app.operations.telegram.utils import (
     get_translation,
     handler_decorator,
 )
+from telegram_bot_app.schemas.pagination import PaginationMeta
 
 if TYPE_CHECKING:
     from telegram.ext import ContextTypes
@@ -321,4 +324,113 @@ async def to_start(
         update=update,
         context=_context,
         as_new_message=False,
+    )
+
+
+@handler_decorator()
+async def toggle_publicity(
+    update: "Update",
+    context: "ContextTypes.DEFAULT_TYPE",
+) -> None:
+    await messages.answer_query(update=update)
+
+    try:
+        attendee = await find_attendee_for_update(update)
+    except NotFoundError:
+        await messages.not_registered(
+            update=update,
+        )
+        return await start_command(update)
+
+    attendee.show_publicly = not attendee.show_publicly
+    await attendee.asave()
+
+    return await messages.show_settings(
+        attendee=attendee,
+        update=update,
+        _context=context,
+    )
+
+
+@handler_decorator()
+async def remove_account(
+    update: "Update",
+    _context: "ContextTypes.DEFAULT_TYPE",
+) -> None:
+    try:
+        await find_attendee_for_update(update)
+    except NotFoundError:
+        await messages.not_registered(
+            update=update,
+        )
+        return await start_command(update)
+
+    return await messages.answer_query(
+        update=update,
+        alert=True,
+        message="Not implemented",
+    )
+
+
+@handler_decorator()
+async def show_tasks(
+    update: "Update",
+    context: "ContextTypes.DEFAULT_TYPE",
+) -> None:
+    await messages.answer_query(update=update)
+
+    try:
+        attendee = await find_attendee_for_update(update)
+    except NotFoundError:
+        return await start_command(update)
+
+    return await messages.show_tasks(
+        attendee=attendee,
+        update=update,
+        _context=context,
+    )
+
+
+@handler_decorator()
+async def show_tasks_pages(
+    update: "Update",
+    context: "ContextTypes.DEFAULT_TYPE",
+) -> None:
+    await messages.answer_query(update=update)
+
+    try:
+        attendee = await find_attendee_for_update(update)
+    except NotFoundError:
+        return await start_command(update)
+
+    task_type = TaskType(update.callback_query.data.split()[1])
+    page = int(update.callback_query.data.split()[3])
+    per_page = 10
+
+    only_available = False
+    only_completed = False
+
+    if task_type == TaskType.AVAILABLE:
+        only_available = True
+    if task_type == TaskType.COMPLETED:
+        only_completed = True
+
+    tasks, total = await get_tasks(
+        attendee=attendee,
+        page=page,
+        per_page=per_page,
+        only_available=only_available,
+        only_completed=only_completed,
+    )
+
+    return await messages.show_tasks_page(
+        page=tasks,
+        pagination_data=PaginationMeta(
+            page=page,
+            per_page=per_page,
+            total=total,
+        ),
+        event=attendee.following_event,
+        update=update,
+        _context=context,
     )

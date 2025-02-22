@@ -10,6 +10,7 @@ class Commands(StrEnum):
     BALANCES = "/show_balances"
     SETTINGS = "/show_settings"
     VIEW_WALLET = "/view_wallet {wallet.uuid}"
+    TASKS = "/show_tasks"
 
     TO_START = "to_start"
 
@@ -18,6 +19,10 @@ class Commands(StrEnum):
 
     TOGGLE_PUBLICITY = "toggle_publicity"
     REMOVE_ACCOUNT = "remove_account"
+
+    AVAILABLE_TASKS = "tasks available {event.uuid} {page}"
+    COMPLETED_TASKS = "tasks completed {event.uuid} {page}"
+    SHOW_TASK = "show_task {task.uuid}"
 
     @property
     def as_command(self) -> str:

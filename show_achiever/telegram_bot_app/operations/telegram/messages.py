@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from achiever_app.models.organization.task import PartnerTask
 from achiever_app.operations.event.read import get_event_by_id, get_recent_events
 from mysite.errors.http_errors import NotFoundError
 from telegram import (
@@ -11,8 +12,10 @@ from telegram import (
     Update,
 )
 from telegram_bot_app.enums.commands import Commands
+from telegram_bot_app.enums.misc import TaskType
 from telegram_bot_app.enums.states import ApplicationStates
 from telegram_bot_app.operations.telegram.utils import get_translation
+from telegram_bot_app.schemas.pagination import PaginationMeta
 
 if TYPE_CHECKING:
     from achiever_app.models.attendee.attendee import Attendee
@@ -36,6 +39,12 @@ async def main_menu(
                 text=translation.MENU__BALANCES,
                 callback_data=Commands.BALANCES.as_command,
             ),
+        ],
+        [
+            InlineKeyboardButton(
+                text=translation.MENU__TASKS,
+                callback_data=Commands.TASKS.as_command,
+            )
         ],
         [
             InlineKeyboardButton(
@@ -268,5 +277,119 @@ async def choose_event(
         translation.REGISTER_EVENT,
         reply_markup=InlineKeyboardMarkup(
             keyboard,
+        ),
+    )
+
+
+async def show_tasks(
+    attendee: "Attendee",
+    update: "Update",
+    _context: "ContextTypes.DEFAULT_TYPE",
+) -> None:
+    translation = get_translation(update)
+
+    event = await attendee.following_event
+
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                text=translation.AVAILABLE_TASKS,
+                callback_data=Commands.AVAILABLE_TASKS.as_command.format(
+                    event=event,
+                    page=1,
+                ),
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                text=translation.COMPLETED_TASKS,
+                callback_data=Commands.COMPLETED_TASKS.as_command.format(
+                    event=event,
+                    page=1,
+                ),
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                text=translation.MENU__TO_START,
+                callback_data=Commands.TO_START.as_command,
+            ),
+        ],
+    ]
+
+    await update.effective_message.edit_text(
+        translation.TASKS.format(
+            event=event,
+        ),
+        reply_markup=InlineKeyboardMarkup(
+            keyboard,
+        ),
+    )
+
+
+async def show_tasks_page(
+    page: list["PartnerTask"],
+    pagination_data: PaginationMeta,
+    event: "Event",
+    update: "Update",
+    _context: "ContextTypes.DEFAULT_TYPE",
+) -> None:
+    translation = get_translation(update)
+
+    inline_menu = []
+
+    for task in page:
+        inline_menu.append(
+            [
+                InlineKeyboardButton(
+                    text=task.name,
+                    callback_data=Commands.SHOW_TASK.as_command.format(
+                        task=task,
+                    ),
+                ),
+            ],
+        )
+
+    previous_page_button = InlineKeyboardButton(
+        text=translation.PAGINATION__PREVIOUS.format(
+            previous=pagination_data.previous_page,
+        ),
+        callback_data=Commands.AVAILABLE_TASKS.as_command.format(
+            event=event,
+            page=pagination_data.previous_page,
+        ),
+    )
+
+    next_page_button = InlineKeyboardButton(
+        text=translation.PAGINATION__NEXT.format(
+            next=pagination_data.next_page,
+        ),
+        callback_data=Commands.AVAILABLE_TASKS.as_command.format(
+            event=event,
+            page=pagination_data.next_page,
+        ),
+    )
+
+    pagination_menu = []
+
+    if pagination_data.previous_page:
+        pagination_menu.append(previous_page_button)
+
+    pagination_menu.append(
+        InlineKeyboardButton(
+            text=translation.MENU__TASKS,
+            callback_data=Commands.TASKS.as_command,
+        )
+    )
+
+    if pagination_data.next_page:
+        pagination_menu.append(next_page_button)
+
+    inline_menu.append(pagination_menu)
+
+    await update.effective_message.edit_text(
+        translation.TASKS_PAGINATION,
+        reply_markup=InlineKeyboardMarkup(
+            inline_menu,
         ),
     )
