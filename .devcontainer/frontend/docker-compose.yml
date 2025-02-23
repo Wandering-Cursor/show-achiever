@@ -1,5 +1,8 @@
 name: "show-achiever"
 
+include:
+  - ./../nginx.docker-compose
+
 services:
   frontend:
     build:
