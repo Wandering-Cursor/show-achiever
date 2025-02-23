@@ -2,7 +2,7 @@ name: "show-achiever"
 
 include:
   - path:
-    - .devcontainer/nginx.docker-compose.yml
+    - ../nginx.docker-compose.yml
 
 services:
   frontend:
