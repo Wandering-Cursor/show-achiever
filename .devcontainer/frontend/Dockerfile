@@ -3,6 +3,6 @@
 # Replace with node:24 in the future
 FROM mcr.microsoft.com/devcontainers/typescript-node:22
 
-USER vscode
+USER node
 
-COPY --chown=vscode:vscode . /workspace
+COPY --chown=node:node . /workspace
