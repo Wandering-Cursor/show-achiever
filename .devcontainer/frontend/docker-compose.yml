@@ -1,0 +1,18 @@
+name: "show-achiever"
+
+include:
+  - path:
+    - ../nginx.docker-compose.yml
+
+services:
+  frontend:
+    build:
+      context: ./../../
+      dockerfile: .devcontainer/frontend/Dockerfile
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    volumes:
+      - frontend-data:/workspace
+
+
+volumes:
+  frontend-data:

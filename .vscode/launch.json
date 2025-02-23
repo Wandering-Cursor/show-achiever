@@ -12,6 +12,8 @@
             "args": [
                 "dev",
                 "show_achiever/main.py",
+                "--host",
+                "0.0.0.0"
             ],
             "jinja": true,
             "justMyCode": false,

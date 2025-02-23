@@ -1,0 +1,19 @@
+{
+	"name": "Show Achiever Frontend",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "frontend",
+	"workspaceFolder": "/workspace",
+	"shutdownAction": "stopCompose",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode-remote.remote-containers",
+				"GitHub.vscode-pull-request-github",
+				"waderyan.gitblame",
+				"phil294.git-log--graph",
+				"esbenp.prettier-vscode",
+				"ms-azuretools.vscode-docker"
+			]
+		}
+	}
+}

@@ -14,7 +14,8 @@
 				"charliermarsh.ruff",
 				"waderyan.gitblame",
 				"phil294.git-log--graph",
-				"esbenp.prettier-vscode"
+				"esbenp.prettier-vscode",
+				"ms-azuretools.vscode-docker"
 			]
 		}
 	}
