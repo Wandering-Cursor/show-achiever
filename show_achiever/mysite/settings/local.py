@@ -21,6 +21,11 @@ ALLOWED_HOSTS = [
     "*",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.ngrok-free.app",
+    "http://localhost",
+]
+
 
 MIDDLEWARE = [*MIDDLEWARE]
 
