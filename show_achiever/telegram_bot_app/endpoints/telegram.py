@@ -1,6 +1,8 @@
 from typing import Annotated
 
+import anyio
 from fastapi import Body
+from fastapi.responses import HTMLResponse
 from mysite.errors.http_errors import NotFoundError
 from telegram_bot_app.endpoints.router import telegram_bot_router
 from telegram_bot_app.models.enums import BotPlatforms
@@ -42,3 +44,13 @@ async def telegram_webhook(
     )
 
     return {"status": "ok"}
+
+
+@telegram_bot_router.get("/mini_app")
+async def mini_app() -> HTMLResponse:
+    async with await anyio.open_file(
+        "show_achiever/telegram_bot_app/templates/mini_app.html"
+    ) as file:
+        content = await file.read()
+
+    return HTMLResponse(content=content)

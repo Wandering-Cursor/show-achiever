@@ -2,6 +2,7 @@ import secrets
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from mysite.config import settings
 from telegram_bot_app.models.base import BaseModel
 from telegram_bot_app.models.enums import BotPlatforms
 
@@ -37,7 +38,16 @@ class Bot(BaseModel):
         - secret_token is the webhook_secret
         - bot_token is the bot_token
         """
-        return f"{self.webhook_url_prefix}/{self.platform}/{self.webhook_secret}/{self.bot_token}"
+        return f"{self.webhook_url_prefix}{settings.root_path}/{self.platform}/{self.webhook_secret}/{self.bot_token}"  # noqa: E501
+
+    @property
+    def webapp_url(self) -> str:
+        """
+        Returns the webapp URL for the bot
+        For example:
+        https://example.com/mini_app
+        """
+        return f"{self.webhook_url_prefix}{settings.mini_app_path}/mini_app"
 
     def generate_secret(self) -> str:
         return secrets.token_urlsafe(32)

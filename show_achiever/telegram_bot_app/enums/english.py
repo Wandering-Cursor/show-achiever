@@ -32,6 +32,7 @@ class TelegramMessages(StrEnum):
 
     # Menu Buttons
 
+    MENU__SCAN_QR = "Scan QR Code 📷"
     MENU__BALANCES = "Balances 💰"
     MENU__TASKS = "Tasks 📝"
     MENU__SETTINGS = "Settings ⚙️"

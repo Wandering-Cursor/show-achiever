@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 
-from achiever_app.models.organization.task import PartnerTask
 from achiever_app.operations.event.read import get_event_by_id, get_recent_events
 from mysite.errors.http_errors import NotFoundError
 from telegram import (
@@ -10,10 +9,11 @@ from telegram import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
     Update,
+    WebAppInfo,
 )
 from telegram_bot_app.enums.commands import Commands
-from telegram_bot_app.enums.misc import TaskType
 from telegram_bot_app.enums.states import ApplicationStates
+from telegram_bot_app.operations.bot.read import get_bot_by_token
 from telegram_bot_app.operations.telegram.utils import get_translation
 from telegram_bot_app.schemas.pagination import PaginationMeta
 
@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     from achiever_app.models.attendee.attendee import Attendee
     from achiever_app.models.attendee.wallet import AttendeeWallet
     from achiever_app.models.organization import Event
+    from achiever_app.models.organization.task import PartnerTask
     from telegram.ext import ContextTypes
 
 
@@ -33,7 +34,17 @@ async def main_menu(
 ) -> int:
     translation = get_translation(update)
 
+    bot = await get_bot_by_token(token=update.get_bot().token)
+
     inline_menu = [
+        [
+            InlineKeyboardButton(
+                text=translation.MENU__SCAN_QR,
+                web_app=WebAppInfo(
+                    url=bot.webapp_url,
+                ),
+            )
+        ],
         [
             InlineKeyboardButton(
                 text=translation.MENU__BALANCES,
