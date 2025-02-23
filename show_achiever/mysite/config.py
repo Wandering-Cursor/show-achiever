@@ -42,12 +42,21 @@ class Settings(BaseSettings):
     # Misc
     timezone_name: str = "UTC"
 
+    mini_app_prefix: str | None = None
+
     @property
     def root_path(self: "Settings") -> str:
         """
         Use to prefix all URLs, for example if your microservices are hosted under one domain
         """
         return "/mysite"
+
+    @property
+    def mini_app_path(self: "Settings") -> str:
+        """
+        Use to set the path for the mini app
+        """
+        return self.mini_app_prefix or self.root_path
 
     @property
     def title(self: "Settings") -> str:

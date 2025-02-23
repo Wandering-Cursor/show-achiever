@@ -20,6 +20,15 @@ class Event(BaseModel):
         blank=True,
     )
 
+    SEMI_UNIQUE_NAME_FORMAT = "{uuid} - {name}"
+
+    @property
+    def semi_unique_name(self) -> str:
+        return self.SEMI_UNIQUE_NAME_FORMAT.format(
+            uuid=str(self.uuid)[:8],
+            name=self.name,
+        )
+
     def __str__(self) -> str:
         return f"{_('Event')} - {self.name}"
 

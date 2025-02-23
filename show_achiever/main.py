@@ -12,6 +12,7 @@ from fastapi.staticfiles import StaticFiles
 from mysite.config import settings
 from mysite.errors.handlers import error_handler_pairs
 from mysite.middleware import add_middlewares
+from telegram_bot_app.endpoints.router import telegram_bot_router
 
 if TYPE_CHECKING:
     from collections.abc import AsyncGenerator
@@ -45,6 +46,7 @@ for handler in error_handler_pairs:
 
 app.include_router(achiever_app_internal_router)
 achiever_app.include_router(achiever_app_router)
+achiever_app.include_router(telegram_bot_router)
 
 
 achiever_app.mount("/django", django_app)
