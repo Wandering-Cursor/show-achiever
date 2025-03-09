@@ -29,7 +29,7 @@ export default function RootLayout({
             >
                 {children}
             </body>
-            <Script src="https://telegram.org/js/telegram-web-app.js?56" />
+            {/* <Script src="https://telegram.org/js/telegram-web-app.js?56" /> */}
         </html>
     );
 }
