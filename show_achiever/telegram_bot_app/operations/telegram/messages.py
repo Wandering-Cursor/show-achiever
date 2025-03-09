@@ -404,3 +404,14 @@ async def show_tasks_page(
             inline_menu,
         ),
     )
+
+
+async def web_app_data_handler(
+    update: "Update",
+    _context: "ContextTypes.DEFAULT_TYPE",
+) -> None:
+    translation = get_translation(update)
+
+    await update.message.reply_text(
+        "Hi!",
+    )

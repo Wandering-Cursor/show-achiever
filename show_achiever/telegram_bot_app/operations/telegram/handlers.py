@@ -434,3 +434,15 @@ async def show_tasks_pages(
         update=update,
         _context=context,
     )
+
+
+async def web_app_data_handler(
+    update: "Update",
+    context: "ContextTypes.DEFAULT_TYPE",
+) -> None:
+    await messages.answer_query(update=update)
+
+    return await messages.web_app_data_handler(
+        update,
+        context,
+    )
