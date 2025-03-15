@@ -49,7 +49,7 @@ class Settings(BaseSettings):
         """
         Use to prefix all URLs, for example if your microservices are hosted under one domain
         """
-        return "/mysite"
+        return "/api"
 
     @property
     def mini_app_path(self: "Settings") -> str:
