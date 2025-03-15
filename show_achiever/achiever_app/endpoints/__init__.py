@@ -1,7 +1,8 @@
-from . import internal, redirect, router
+from . import internal, redirect, router, task
 
 __all__ = [
     "internal",
     "redirect",
     "router",
+    "task",
 ]

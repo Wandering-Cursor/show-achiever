@@ -146,13 +146,6 @@ async def make_bot(bot: "Bot") -> Application:
         )
     )
 
-    application.add_handler(
-        MessageHandler(
-            filters.StatusUpdate.WEB_APP_DATA,
-            callback=handlers.web_app_data_handler,
-        ),
-    )
-
     await application.initialize()
 
     return application

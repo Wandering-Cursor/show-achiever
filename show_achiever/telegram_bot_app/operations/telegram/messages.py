@@ -42,6 +42,9 @@ async def main_menu(
                 text=translation.MENU__SCAN_QR,
                 web_app=WebAppInfo(
                     url=bot.webapp_url,
+                    api_kwargs={
+                        "start_param": "Test Value",
+                    },
                 ),
             )
         ],
@@ -403,15 +406,4 @@ async def show_tasks_page(
         reply_markup=InlineKeyboardMarkup(
             inline_menu,
         ),
-    )
-
-
-async def web_app_data_handler(
-    update: "Update",
-    _context: "ContextTypes.DEFAULT_TYPE",
-) -> None:
-    translation = get_translation(update)
-
-    await update.message.reply_text(
-        "Hi!",
     )
