@@ -1,6 +1,8 @@
 "use client";
 
 import sendQRCodeDataToBackend from '@/api/sendQrCodeData';
+import stringifyErrors from '@/api/stringifyErrors';
+import verifyInitialData from '@/api/verifyInitialData';
 
 import { useEffect } from 'react';
 
@@ -11,6 +13,7 @@ interface Telegram {
         init: () => void;
         showScanQrPopup: (options: { text: string }, callback: (qr: string) => void) => void;
         showPopup: (options: { message: string }) => void;
+        showAlert: (message: string) => void;
         closeScanQrPopup: () => void;
         close: () => void;
     };
@@ -54,7 +57,23 @@ export default function TelegramMiniApp() {
             window.Telegram.WebApp.ready();
 
             const initData = window.Telegram.WebApp.initData;
-            // Verify initData integrity by checking hash
+
+            const checkResponse = verifyInitialData(initData);
+
+            checkResponse.then(
+                (response) => {
+                    if (!response.ok) {
+                        window.Telegram.WebApp.closeScanQrPopup();
+                        window.Telegram.WebApp.showPopup(
+                            {
+                                message: 'We could not verify the data integrity! Exiting.',
+                            }
+                        );
+                        window.Telegram.WebApp.close();
+                    }
+                }
+            )
+
             const user = getUser(initData);
 
             window.Telegram.WebApp.showScanQrPopup(
@@ -77,10 +96,24 @@ export default function TelegramMiniApp() {
                             payload: qr,
                             chat_id: user.id,
                         }
+                    ).then(
+                        async (response) => {
+                            if (response.ok) {
+                                window.Telegram.WebApp.showAlert(
+                                    'QR Code processed successfully!',
+                                );
+                                window.Telegram.WebApp.closeScanQrPopup();
+                                window.Telegram.WebApp.close();
+                            }
+                            else {
+                                window.Telegram.WebApp.showAlert(
+                                    `Could not process the QR Code.\nErrors:\n${stringifyErrors(await response.json())}`
+                                );
+                                window.Telegram.WebApp.closeScanQrPopup();
+                                window.Telegram.WebApp.close();
+                            }
+                        }
                     )
-
-                    window.Telegram.WebApp.closeScanQrPopup();
-                    window.Telegram.WebApp.close();
                 },
             );
         },
