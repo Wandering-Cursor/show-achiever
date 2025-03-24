@@ -9,7 +9,7 @@ dependencies = [
     "dj-database-url==2.3.0",
     "django==5.1.6",
     "django-redis>=5.4.0",
-    "fastapi[standard]==0.115.8",
+    "fastapi[standard]==0.115.12",
     "pillow>=11.1.0",
     "psycopg>=3.2.4",
     "pydantic-settings>=2.7.1",
