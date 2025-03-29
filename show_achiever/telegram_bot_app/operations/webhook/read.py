@@ -15,3 +15,11 @@ async def find_bot(
         )
     except Bot.DoesNotExist:
         return None
+
+
+async def find_all_bots(
+    platform: BotPlatforms,
+) -> list[Bot]:
+    qs = Bot.objects.filter(platform=platform)
+
+    return [bot async for bot in qs]

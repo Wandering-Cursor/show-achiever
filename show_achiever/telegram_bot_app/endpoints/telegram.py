@@ -1,13 +1,12 @@
 from typing import Annotated
 
-import anyio
 from fastapi import Body
-from fastapi.responses import HTMLResponse
 from mysite.errors.http_errors import NotFoundError
 from telegram_bot_app.endpoints.router import telegram_bot_router
 from telegram_bot_app.models.enums import BotPlatforms
+from telegram_bot_app.operations.telegram.check import check_initial_data
 from telegram_bot_app.operations.webhook.process import process_webhook
-from telegram_bot_app.operations.webhook.read import find_bot
+from telegram_bot_app.operations.webhook.read import find_all_bots, find_bot
 
 
 @telegram_bot_router.post(
@@ -46,11 +45,27 @@ async def telegram_webhook(
     return {"status": "ok"}
 
 
-@telegram_bot_router.get("/mini_app")
-async def mini_app() -> HTMLResponse:
-    async with await anyio.open_file(
-        "show_achiever/telegram_bot_app/templates/mini_app.html"
-    ) as file:
-        content = await file.read()
+@telegram_bot_router.post("/telegram/initial_data")
+async def validate_initial_data(
+    data: Annotated[dict, Body()],
+) -> bool:
+    """
+    Validate initial data
+    """
+    bots = await find_all_bots(
+        platform=BotPlatforms.TELEGRAM,
+    )
 
-    return HTMLResponse(content=content)
+    for bot in bots:
+        if check_initial_data(
+            data=data["data"],
+            bot_token=bot.bot_token,
+        ):
+            return True
+
+    raise NotFoundError(
+        log_message={
+            "msg": "Cannot validate initial data",
+            "data": data,
+        }
+    )
