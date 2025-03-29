@@ -7,7 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "celery>=5.4.0",
     "dj-database-url==2.3.0",
-    "django==5.1.6",
+    "django==5.1.7",
     "django-redis>=5.4.0",
     "fastapi[standard]==0.115.12",
     "pillow>=11.1.0",
