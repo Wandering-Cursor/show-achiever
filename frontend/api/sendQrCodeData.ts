@@ -9,8 +9,10 @@ export default function sendQRCodeDataToBackend(
         chat_id
     }: QRCodeData
 ) {
+    const encodedPayload = encodeURIComponent(payload);
+
     return fetch(
-        `/api/task/${payload}`,
+        `/api/task/${encodedPayload}`,
         {
             method: 'POST',
             headers: {
