@@ -42,9 +42,6 @@ async def main_menu(
                 text=translation.MENU__SCAN_QR,
                 web_app=WebAppInfo(
                     url=bot.webapp_url,
-                    api_kwargs={
-                        "start_param": "Test Value",
-                    },
                 ),
             )
         ],

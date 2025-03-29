@@ -31,6 +31,7 @@ async def send_task_completed_notification(
     attendee: "Attendee",
     task_item: "PartnerTaskItem",
 ) -> None:
+    # TODO (@makisukurisu): Implement notification  # noqa: FIX002, TD003
     # We need to send a notification to the user
     # probably via all available bots :?
     pass

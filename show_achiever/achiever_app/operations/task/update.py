@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from achiever_app.errors.task import TaskItemUsedError
 from achiever_app.operations.attendee.tasks.create import complete_task
 
 if TYPE_CHECKING:
@@ -12,7 +13,7 @@ async def use_task_item(
     task_item: "PartnerTaskItem",
 ) -> bool:
     if task_item.is_used:
-        raise ValueError("Task item is already used")
+        raise TaskItemUsedError("Task item is already used")
 
     is_completed = await complete_task(
         attendee=attendee,

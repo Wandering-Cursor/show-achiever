@@ -9,20 +9,20 @@ dependencies = [
     "dj-database-url==2.3.0",
     "django==5.1.6",
     "django-redis>=5.4.0",
-    "fastapi[standard]==0.115.8",
+    "fastapi[standard]==0.115.12",
     "pillow>=11.1.0",
     "psycopg>=3.2.4",
     "pydantic-settings>=2.7.1",
     "python-telegram-bot>=21.10",
     "python-telegram-bot-django-persistence[ptb]>=0.2.1",
-    "pytz>=2025.1",
+    "pytz>=2025.2",
     "toml>=0.10.2",
 ]
 
 [tool.uv]
 dev-dependencies = [
     "ipython>=8.32.0",
-    "ruff>=0.9.5",
+    "ruff>=0.11.2",
 ]
 
 [tool.ruff]
